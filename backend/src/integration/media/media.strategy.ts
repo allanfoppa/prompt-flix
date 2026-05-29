@@ -1,4 +1,4 @@
-import { TmdbDiscoverResponse } from './tmdb.strategy';
+import { TmdbDiscoverResponse } from './strategies/tmdb.strategy';
 
 export interface MediaStrategy {
   getDiscoverMovies(

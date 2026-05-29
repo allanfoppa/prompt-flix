@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MediaService } from './media.service';
-import { MEDIA_STRATEGY } from './strategies/media.strategy';
+import { MEDIA_STRATEGY } from './media.strategy';
 import { TmdbStrategy } from './strategies/tmdb.strategy';
 
 @Module({

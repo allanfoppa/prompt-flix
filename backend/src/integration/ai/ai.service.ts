@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LLM_STRATEGY } from './strategies/llm.strategy';
-import type { LlmStrategy } from './strategies/llm.strategy';
+import { LLM_STRATEGY } from './ai.strategy';
+import type { LlmStrategy } from './ai.strategy';
 
 @Injectable()
 export class AiService {

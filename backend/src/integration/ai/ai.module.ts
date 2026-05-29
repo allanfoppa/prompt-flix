@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AiService } from './ai.service';
-import { LLM_STRATEGY } from './strategies/llm.strategy';
+import { LLM_STRATEGY } from './ai.strategy';
 import { GroqStrategy } from './strategies/groq.strategy';
 
 @Module({

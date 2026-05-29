@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MEDIA_STRATEGY } from './strategies/media.strategy';
-import type { MediaStrategy } from './strategies/media.strategy';
+import { MEDIA_STRATEGY } from './media.strategy';
+import type { MediaStrategy } from './media.strategy';
 import { TmdbDiscoverResponse } from './strategies/tmdb.strategy';
 
 @Injectable()

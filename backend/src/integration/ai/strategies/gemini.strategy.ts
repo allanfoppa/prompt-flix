@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI, Schema, Type } from '@google/genai';
-import { LlmStrategy } from './llm.strategy';
+import { LlmStrategy } from '../ai.strategy';
 import { searchMovieProperties } from '../tools/search-movies.tool';
 
 @Injectable()
