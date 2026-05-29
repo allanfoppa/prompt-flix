@@ -14,7 +14,7 @@ export class MoviesController {
   constructor(private readonly movies: MoviesService) {}
 
   @Version('2')
-  @Post('search')
+  @Post('discover')
   @HttpCode(HttpStatus.OK)
   search(@Body() dto: SearchMoviesDto) {
     return this.movies.search(dto.query);

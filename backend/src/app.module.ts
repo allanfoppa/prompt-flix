@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AiModule } from './features/ai/ai.module';
+import { AiModule } from './integration/ai/ai.module';
 import { MoviesModule } from './features/movies/movies.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
@@ -13,17 +13,17 @@ import { validationPipe } from './common/pipes/validation.pipe';
 import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { HealthModule } from './features/health/health.module';
-import { TmdbModule } from './integration/tmdb/tmdb.module';
+import { MediaModule } from './integration/media/media.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     HealthModule,
     MoviesModule,
-    AiModule,
     HttpModule,
     TerminusModule,
-    TmdbModule,
+    AiModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [

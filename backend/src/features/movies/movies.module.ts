@@ -1,19 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
-import { AiModule } from '../ai/ai.module';
-import { MOVIE_STRATEGY } from '../../integration/movie.strategy';
-import { TmdbService } from '../../integration/tmdb/tmdb.service';
+import { AiModule } from '../../integration/ai/ai.module';
+import { MediaModule } from '../../integration/media/media.module';
 
 @Module({
-  imports: [AiModule],
+  imports: [AiModule, MediaModule],
   controllers: [MoviesController],
-  providers: [
-    MoviesService,
-    {
-      provide: MOVIE_STRATEGY,
-      useClass: TmdbService,
-    },
-  ],
+  providers: [MoviesService],
 })
 export class MoviesModule {}

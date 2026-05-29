@@ -1,10 +1,9 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
-import { AiService } from '../ai/ai.service';
+import { AiService } from '../../integration/ai/ai.service';
 import { MovieResponse } from './movies.types';
 import { toMovieResponse } from './movies.mapper';
-import { MOVIE_STRATEGY } from '../../integration/movie.strategy';
-import type { MovieStrategy } from '../../integration/movie.strategy';
+import { MediaService } from '../../integration/media/media.service';
 
 @Injectable()
 export class MoviesService {
@@ -12,12 +11,12 @@ export class MoviesService {
 
   constructor(
     private readonly ai: AiService,
-    @Inject(MOVIE_STRATEGY) private readonly movieStrategy: MovieStrategy,
+    private readonly media: MediaService,
   ) {}
 
   async search(query: string): Promise<MovieResponse[]> {
     const filters = await this.ai.extractMovieFilters(query);
-    console.log('Extracted filters from AI:', filters);
+    this.logger.log('Extracted filters from AI:', filters);
 
     const cleanFilters = Object.fromEntries(
       Object.entries(filters).filter(
@@ -26,9 +25,9 @@ export class MoviesService {
       ),
     );
 
-    const response = await this.movieStrategy.getDiscoverMovies(cleanFilters);
+    const response = await this.media.getDiscoverMovies(cleanFilters);
 
-    this.logger.log(`Received ${response.results.length} movies from strategy`);
+    this.logger.log(`Received movies from media service`);
 
     return response.results.map(toMovieResponse);
   }
