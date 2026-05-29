@@ -1,20 +1,14 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { MoviesService } from './movies.service';
-import { AiService } from '../../ai/ai.service';
-
-export class SearchMoviesDto {
-  query!: string;
-}
+import { SearchMoviesDto } from './search-movies.dto';
 
 @Controller('movies')
 export class MoviesController {
-  constructor(
-    private readonly ai: AiService,
-    private readonly movies: MoviesService,
-  ) {}
+  constructor(private readonly movies: MoviesService) {}
 
   @Post('search')
-  async search(@Body() dto: SearchMoviesDto) {
+  @HttpCode(HttpStatus.OK)
+  search(@Body() dto: SearchMoviesDto) {
     return this.movies.search(dto.query);
   }
 }

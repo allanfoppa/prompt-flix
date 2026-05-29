@@ -1,26 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadGatewayException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AiService } from '../../ai/ai.service';
+import { AiService } from '../ai/ai.service';
 import { MovieResponse, TmdbDiscoverResponse } from './movies.types';
 import { toMovieResponse } from './movies.mapper';
 
 @Injectable()
 export class MoviesService {
-  private baseUrl: string;
-  private apiKey: string;
+  private readonly logger = new Logger(MoviesService.name);
+  private readonly baseUrl: string;
+  private readonly apiKey: string;
 
   constructor(
-    private config: ConfigService,
-    private ai: AiService,
+    private readonly config: ConfigService,
+    private readonly ai: AiService,
   ) {
-    this.baseUrl = this.config.get<string>(
-      'TMDB_BASE_URL',
-      'https://api.themoviedb.org/3',
-    );
-    this.apiKey = this.config.get<string>(
-      'TMDB_API_KEY',
-      'https://api.themoviedb.org/3',
-    );
+    this.baseUrl = this.config.getOrThrow<string>('TMDB_BASE_URL');
+    this.apiKey = this.config.getOrThrow<string>('TMDB_API_KEY');
   }
 
   async search(query: string): Promise<MovieResponse[]> {
@@ -35,7 +30,8 @@ export class MoviesService {
     const response = await fetch(`${this.baseUrl}/discover/movie?${params}`);
 
     if (!response.ok) {
-      throw new Error(`TMDB error: ${response.status}`);
+      this.logger.error(`TMDB responded with ${response.status}`);
+      throw new BadGatewayException(`TMDB error: ${response.status}`);
     }
 
     const data = (await response.json()) as TmdbDiscoverResponse;
