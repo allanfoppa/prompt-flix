@@ -18,22 +18,25 @@ import { MediaModule } from './integration/media/media.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // FEATURES
     HealthModule,
     MoviesModule,
-    HttpModule,
-    TerminusModule,
+    // INTEGRATIONS
     AiModule,
     MediaModule,
+    // THIRD-PARTY
+    HttpModule,
+    TerminusModule,
   ],
   controllers: [AppController],
   providers: [
+    AppService,
     {
       provide: APP_PIPE,
       useValue: validationPipe,
     },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
-    AppService,
   ],
 })
 export class AppModule implements NestModule {

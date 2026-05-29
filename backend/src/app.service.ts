@@ -6,7 +6,7 @@ export class AppService {
     try {
       const appMetadata = {
         title: 'PromptFlix API',
-        summary: 'API to recommend movies based on user prompts.',
+        summary: 'API to recommend movies and series based on user prompts.',
         version: `${process.env.APP_VERSION || '1.0.0'}`,
         author: {
           name: 'Allan Foppa Fagundes',
