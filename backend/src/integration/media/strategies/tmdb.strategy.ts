@@ -1,10 +1,26 @@
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TmdbDiscoverResponse } from '../../features/movies/movies.types';
+
+export interface TmdbMovie {
+  id: number;
+  title: string;
+  overview: string;
+  release_date: string;
+  vote_average: number;
+  poster_path: string | null;
+  genre_ids: number[];
+}
+
+export interface TmdbDiscoverResponse {
+  results: TmdbMovie[];
+  total_results: number;
+  total_pages: number;
+  page: number;
+}
 
 @Injectable()
-export class TmdbService {
-  private readonly logger = new Logger(TmdbService.name);
+export class TmdbStrategy {
+  private readonly logger = new Logger(TmdbStrategy.name);
   private readonly baseUrl: string;
   private readonly apiKey: string;
 
@@ -14,12 +30,12 @@ export class TmdbService {
   }
 
   async getDiscoverMovies(
-    cleanFilters: Record<string, string>,
+    filters: Record<string, string>,
   ): Promise<TmdbDiscoverResponse> {
     const params = new URLSearchParams({
       api_key: this.apiKey,
       language: 'en-US',
-      ...cleanFilters,
+      ...filters,
     });
 
     const response = await fetch(`${this.baseUrl}/discover/movie?${params}`);
