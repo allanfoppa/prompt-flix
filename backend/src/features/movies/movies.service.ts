@@ -1,40 +1,35 @@
-import { Injectable, BadGatewayException, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+
 import { AiService } from '../ai/ai.service';
-import { MovieResponse, TmdbDiscoverResponse } from './movies.types';
+import { MovieResponse } from './movies.types';
 import { toMovieResponse } from './movies.mapper';
+import { MOVIE_STRATEGY } from '../../integration/movie.strategy';
+import type { MovieStrategy } from '../../integration/movie.strategy';
 
 @Injectable()
 export class MoviesService {
   private readonly logger = new Logger(MoviesService.name);
-  private readonly baseUrl: string;
-  private readonly apiKey: string;
 
   constructor(
-    private readonly config: ConfigService,
     private readonly ai: AiService,
-  ) {
-    this.baseUrl = this.config.getOrThrow<string>('TMDB_BASE_URL');
-    this.apiKey = this.config.getOrThrow<string>('TMDB_API_KEY');
-  }
+    @Inject(MOVIE_STRATEGY) private readonly movieStrategy: MovieStrategy,
+  ) {}
 
   async search(query: string): Promise<MovieResponse[]> {
     const filters = await this.ai.extractMovieFilters(query);
+    console.log('Extracted filters from AI:', filters);
 
-    const params = new URLSearchParams({
-      api_key: this.apiKey,
-      language: 'en-US',
-      ...filters,
-    });
+    const cleanFilters = Object.fromEntries(
+      Object.entries(filters).filter(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, v]) => v !== '' && v !== null && v !== undefined,
+      ),
+    );
 
-    const response = await fetch(`${this.baseUrl}/discover/movie?${params}`);
+    const response = await this.movieStrategy.getDiscoverMovies(cleanFilters);
 
-    if (!response.ok) {
-      this.logger.error(`TMDB responded with ${response.status}`);
-      throw new BadGatewayException(`TMDB error: ${response.status}`);
-    }
+    this.logger.log(`Received ${response.results.length} movies from strategy`);
 
-    const data = (await response.json()) as TmdbDiscoverResponse;
-    return data.results.map(toMovieResponse);
+    return response.results.map(toMovieResponse);
   }
 }

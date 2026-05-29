@@ -13,6 +13,7 @@ import { validationPipe } from './common/pipes/validation.pipe';
 import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { HealthModule } from './features/health/health.module';
+import { TmdbModule } from './integration/tmdb/tmdb.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { HealthModule } from './features/health/health.module';
     AiModule,
     HttpModule,
     TerminusModule,
+    TmdbModule,
   ],
   controllers: [AppController],
   providers: [

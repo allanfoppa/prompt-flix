@@ -10,14 +10,15 @@ export class GroqStrategy implements LlmStrategy {
 
   constructor(private config: ConfigService) {
     this.client = new Groq({
-      apiKey: this.config.get<string>('GROQ_API_KEY', ''),
+      apiKey: this.config.getOrThrow<string>('GROQ_API_KEY'),
     });
   }
 
   async extractMovieFilters(query: string): Promise<Record<string, string>> {
+    console.log('Using Groq strategy to extract movie filters', query);
+    console.log('searchMovieProperties', searchMovieProperties);
     const response = await this.client.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'user', content: query }],
       tools: [
         {
           type: 'function',
@@ -34,6 +35,17 @@ export class GroqStrategy implements LlmStrategy {
         },
       ],
       tool_choice: 'required',
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You are a movie search assistant. Extract TMDB filters from the user query. If the user specifies how many movies they want (e.g. "just one", "only one", "give me 3"), extract that as the limit field.',
+        },
+        {
+          role: 'user',
+          content: query,
+        },
+      ],
     });
 
     const call = response.choices[0]?.message.tool_calls?.[0];

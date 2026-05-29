@@ -10,7 +10,7 @@ export class GeminiStrategy implements LlmStrategy {
 
   constructor(private config: ConfigService) {
     this.client = new GoogleGenAI({
-      apiKey: this.config.get<string>('GEMINI_API_KEY', ''),
+      apiKey: this.config.getOrThrow<string>('GEMINI_API_KEY'),
     });
   }
 
