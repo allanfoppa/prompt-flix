@@ -17,11 +17,11 @@ import { HealthModule } from './features/health/health.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TerminusModule,
+    HealthModule,
     MoviesModule,
     AiModule,
     HttpModule,
-    HealthModule,
+    TerminusModule,
   ],
   controllers: [AppController],
   providers: [

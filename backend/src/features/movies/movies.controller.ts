@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Version,
+} from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { SearchMoviesDto } from './search-movies.dto';
 
@@ -6,6 +13,7 @@ import { SearchMoviesDto } from './search-movies.dto';
 export class MoviesController {
   constructor(private readonly movies: MoviesService) {}
 
+  @Version('2')
   @Post('search')
   @HttpCode(HttpStatus.OK)
   search(@Body() dto: SearchMoviesDto) {

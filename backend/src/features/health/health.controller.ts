@@ -1,4 +1,4 @@
-import { Controller, Dependencies, Get } from '@nestjs/common';
+import { Controller, Dependencies, Get, Version } from '@nestjs/common';
 import {
   HealthCheckService,
   HttpHealthIndicator,
@@ -14,6 +14,7 @@ export class HealthController {
   ) {}
 
   @Get()
+  @Version('1')
   @HealthCheck()
   healthCheck(): Promise<Record<string, unknown>> {
     return this.health.check([
