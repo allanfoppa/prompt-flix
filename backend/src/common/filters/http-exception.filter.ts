@@ -26,20 +26,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const message = isClientError
       ? this.resolveClientMessage(exception)
-      : 'Internal server error';
-
-    if (!isClientError) {
-      this.logger.error(
-        `${req.method} ${req.url} → ${status}`,
-        exception instanceof Error ? exception.stack : String(exception),
-      );
-    }
+      : this.resolveServerMessage(exception, req, status);
 
     res.status(status).json({
       metadata: {
         status: 'error',
         statusCode: status,
-        end: req.url,
+        endpoint: req.url,
         timestamp: new Date().toISOString(),
         correlationId: req.correlationId ?? '',
         message,
@@ -65,5 +58,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     return exception.message;
+  }
+
+  private resolveServerMessage(
+    exception: unknown,
+    req: Request,
+    status: number,
+  ): string {
+    this.logger.error(
+      `${req.method} ${req.url} → ${status}`,
+      exception instanceof Error ? exception.stack : String(exception),
+    );
+
+    if (exception instanceof Error) {
+      return exception.message;
+    }
+
+    return 'Internal server error';
   }
 }
