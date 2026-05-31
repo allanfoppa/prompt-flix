@@ -1,0 +1,39 @@
+name: promptflix
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: promptflix-grafana
+    ports:
+      - '3001:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:latest
+    container_name: promptflix-loki
+    ports:
+      - '3100:3100'
+    volumes:
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: promptflix-alloy
+    volumes:
+      - ../backend/logs:/logs
+      - ./grafana/alloy-config.alloy:/etc/alloy/config.alloy
+    command: run /etc/alloy/config.alloy
+    depends_on:
+      - loki
+
+volumes:
+  grafana_data:
+  loki_data:
